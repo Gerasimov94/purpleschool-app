@@ -5,9 +5,11 @@
       "src/*": ["src/*"],
     },
     "sourceMap": true,
-		"outDir": "./dist",
-		"removeComments": true,
-    "target": "ES6",
+    "outDir": "./dist",
+    "removeComments": true,
+    "target": "es6",
+    "lib": ["es6", "dom"],
+    "types": ["reflect-metadata"],
     "allowJs": true,
     "module": "commonjs",
     "isolatedModules": true,
@@ -22,5 +24,5 @@
     "skipLibCheck": true,
     "moduleResolution": "node",
   },
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "./dist"]
 }

@@ -1,12 +1,19 @@
-import { ERROR_LEVEL, INFO_LEVEL, WARNING_LEVEL } from 'src/common/constants';
-import { IAbstractMonitoringSystem } from 'src/common/types/abstract';
-import { Logger, ILogObj } from 'tslog';
+import { inject, injectable } from 'inversify';
+import 'reflect-metadata';
+import {
+	TYPES, INFO_LEVEL, WARNING_LEVEL, ERROR_LEVEL,
+} from 'src/common/constants';
+import { ILogger } from 'src/common/logger/logger.interface';
+import { IMonitoring } from 'src/monitoring/monitoring.interface';
+import { Logger } from 'tslog';
 
-export default class LoggerService {
-	public logger: Logger<ILogObj>;
-	private _monitoringService: IAbstractMonitoringSystem;
-	constructor(monitoringService: IAbstractMonitoringSystem) {
-		this.logger = new Logger<ILogObj>();
+@injectable()
+export default class LoggerService implements ILogger {
+	public logger: Logger<ILogger>;
+	private _monitoringService: IMonitoring;
+
+	constructor(@inject(TYPES.MonitoringSystem) monitoringService: ILogger) {
+		this.logger = new Logger<ILogger>();
 		this._monitoringService = monitoringService;
 	}
 

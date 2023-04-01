@@ -7,6 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
+    "start": "node ./dist/main.js",
     "start:prod": "node -r ts-node/register/transpile-only -r tsconfig-paths/register ./dist/main.js",
     "start:dev": "nodemon -w ts-node -r tsconfig-paths/register ./src/main.ts"
   },
@@ -32,9 +33,11 @@
     "typescript": "4.9.5"
   },
   "dependencies": {
-    "dotenv": "^16.0.3",
+    "dotenv": "16.0.3",
     "express": "4.18.2",
-    "rollbar": "^2.26.1",
+    "inversify": "6.0.1",
+    "reflect-metadata": "0.1.13",
+    "rollbar": "2.26.1",
     "ts-node": "10.9.1",
     "tsconfig-paths": "4.1.2",
     "tslog": "4.8.2"

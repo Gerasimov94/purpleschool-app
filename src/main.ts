@@ -1,9 +1,14 @@
-import App from 'src/app';
-import Logger from 'src/common/logger/logger.service';
 import { config as initializeConfig } from 'dotenv';
+import { Container } from 'inversify';
 import Rollbar from 'rollbar';
-import UserController from 'src/users/controllers/users.controller';
+import App from 'src/app';
+import { TYPES } from 'src/common/constants';
+import { ILogger } from 'src/common/logger/logger.interface';
+import LoggerService from 'src/common/logger/logger.service';
 import { ExceptionFilter } from 'src/errors/exception.filter';
+import { IExceptionFilter } from 'src/errors/types';
+import { IMonitoring } from 'src/monitoring/monitoring.interface';
+import UserController from 'src/users/controllers/users.controller';
 
 initializeConfig();
 
@@ -13,15 +18,16 @@ const rollbar = new Rollbar({
 	captureUnhandledRejections: true,
 });
 
-const logger = new Logger(rollbar);
+try {
+	const appContainer = new Container();
+	appContainer.bind<ILogger>(TYPES.ILogger).to(LoggerService);
+	appContainer.bind<IExceptionFilter>(TYPES.ExceptionFilter).to(ExceptionFilter);
+	appContainer.bind<UserController>(TYPES.UserController).to(UserController);
+	appContainer.bind<IMonitoring>(TYPES.MonitoringSystem).toConstantValue(rollbar);
+	appContainer.bind<App>(TYPES.App).to(App);
+	const app = appContainer.get<App>(TYPES.App);
 
-(async () => {
-	const app = new App({
-		Logger: logger,
-		port: 8080,
-		userController: new UserController(logger),
-		exceptionFilter: new ExceptionFilter(logger),
-	});
-
-	await app.init();
-})();
+	app.init();
+} catch (error) {
+	console.log(error);
+}
