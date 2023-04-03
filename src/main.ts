@@ -1,5 +1,5 @@
 import { config as initializeConfig } from 'dotenv';
-import { Container } from 'inversify';
+import { Container, ContainerModule, interfaces } from 'inversify';
 import Rollbar from 'rollbar';
 import App from 'src/app';
 import { TYPES } from 'src/common/constants';
@@ -8,7 +8,8 @@ import LoggerService from 'src/common/logger/logger.service';
 import { ExceptionFilter } from 'src/errors/exception.filter';
 import { IExceptionFilter } from 'src/errors/types';
 import { IMonitoring } from 'src/monitoring/monitoring.interface';
-import UserController from 'src/users/controllers/users.controller';
+import UserController from 'src/user/controllers/user.controller';
+import { IUserController } from 'src/user/interfaces/user.interface';
 
 initializeConfig();
 
@@ -18,16 +19,31 @@ const rollbar = new Rollbar({
 	captureUnhandledRejections: true,
 });
 
-try {
-	const appContainer = new Container();
-	appContainer.bind<ILogger>(TYPES.ILogger).to(LoggerService);
-	appContainer.bind<IExceptionFilter>(TYPES.ExceptionFilter).to(ExceptionFilter);
-	appContainer.bind<UserController>(TYPES.UserController).to(UserController);
-	appContainer.bind<IMonitoring>(TYPES.MonitoringSystem).toConstantValue(rollbar);
-	appContainer.bind<App>(TYPES.App).to(App);
-	const app = appContainer.get<App>(TYPES.App);
+const AppBindings = new ContainerModule((bind: interfaces.Bind) => {
+	bind<ILogger>(TYPES.ILogger).to(LoggerService);
+	bind<IExceptionFilter>(TYPES.ExceptionFilter).to(ExceptionFilter);
+	bind<IUserController>(TYPES.IUserController).to(UserController);
+	bind<IMonitoring>(TYPES.MonitoringSystem).toConstantValue(rollbar);
+	bind<App>(TYPES.App).to(App);
+});
 
-	app.init();
-} catch (error) {
-	console.log(error);
-}
+const bootstrap = () => {
+	try {
+		const appContainer = new Container();
+		appContainer.load(AppBindings);
+		const app = appContainer.get<App>(TYPES.App);
+
+		app.init();
+
+		return { app, appContainer };
+	} catch (err) {
+		console.log(err);
+
+		return {
+			app: null,
+			appContainer: null,
+		};
+	}
+};
+
+export const { app, appContainer } = bootstrap();
