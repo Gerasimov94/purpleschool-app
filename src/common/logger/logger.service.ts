@@ -1,8 +1,6 @@
 import { inject, injectable } from 'inversify';
 import 'reflect-metadata';
-import {
-	TYPES, INFO_LEVEL, WARNING_LEVEL, ERROR_LEVEL,
-} from 'src/common/constants';
+import { TYPES, INFO_LEVEL, WARNING_LEVEL, ERROR_LEVEL } from 'src/common/constants';
 import { ILogger } from 'src/common/logger/logger.interface';
 import { IMonitoring } from 'src/monitoring/monitoring.interface';
 import { Logger } from 'tslog';

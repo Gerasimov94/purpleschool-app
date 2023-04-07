@@ -6,10 +6,11 @@
   "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ./src/** --fix",
     "build": "tsc",
     "start": "node ./dist/main.js",
     "start:prod": "node -r ts-node/register/transpile-only -r tsconfig-paths/register ./dist/main.js",
-    "start:dev": "nodemon -w ts-node -r tsconfig-paths/register ./src/main.ts"
+    "start:dev": "nodemon"
   },
   "repository": {
     "type": "git",
@@ -27,10 +28,13 @@
     "@typescript-eslint/parser": "5.40.1",
     "eslint": "8.25.0",
     "eslint-config-airbnb-base": "15.0.0",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-import-resolver-typescript": "3.5.3",
     "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "2.0.21",
-    "typescript": "4.9.5"
+    "prettier": "^2.8.7",
+    "typescript": "^4.9.5"
   },
   "dependencies": {
     "dotenv": "16.0.3",
