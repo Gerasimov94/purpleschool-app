@@ -10,6 +10,8 @@ import { IExceptionFilter } from 'src/errors/types';
 import { IMonitoring } from 'src/monitoring/monitoring.interface';
 import UserController from 'src/user/controllers/user.controller';
 import { IUserController } from 'src/user/interfaces/user.interface';
+import { IUserService } from 'src/user/interfaces/user.service.interface';
+import UserService from 'src/user/services/user.service';
 
 initializeConfig();
 
@@ -21,8 +23,9 @@ const rollbar = new Rollbar({
 
 const AppBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<ILogger>(TYPES.ILogger).to(LoggerService);
-	bind<IExceptionFilter>(TYPES.ExceptionFilter).to(ExceptionFilter);
+	bind<IUserService>(TYPES.IUserService).to(UserService);
 	bind<IUserController>(TYPES.IUserController).to(UserController);
+	bind<IExceptionFilter>(TYPES.ExceptionFilter).to(ExceptionFilter);
 	bind<IMonitoring>(TYPES.MonitoringSystem).toConstantValue(rollbar);
 	bind<App>(TYPES.App).to(App);
 });

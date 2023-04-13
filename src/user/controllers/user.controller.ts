@@ -6,24 +6,43 @@ import { TYPES } from 'src/common/constants';
 import BaseController from 'src/common/controllers/base.controller';
 import { ILogger } from 'src/common/logger/logger.interface';
 import HTTPError from 'src/errors/basic/http-error';
+import UserLoginDTO from 'src/user/dto/user-login.dto';
+import UserRegisterDTO from 'src/user/dto/user-register.dto';
+import User from 'src/user/entities/user.entity';
 import { IUserController } from 'src/user/interfaces/user.interface';
+import { IUserService } from 'src/user/interfaces/user.service.interface';
 
 @injectable()
 export default class UserController extends BaseController implements IUserController {
-	constructor(@inject(TYPES.ILogger) public loggerService: ILogger) {
+	constructor(
+		@inject(TYPES.ILogger) private loggerService: ILogger,
+		@inject(TYPES.IUserService) private userService: IUserService,
+	) {
 		super(loggerService);
 
 		this.bindRoutes([
-			{ method: 'get', path: '/register', cb: this.register },
+			{ method: 'post', path: '/register', cb: this.register },
 			{ method: 'post', path: '/login', cb: this.login },
 		]);
 	}
 
-	login(_req: Request, res: Response, next: NextFunction) {
+	login(
+		_req: Request<Record<never, never>, Record<never, never>, UserLoginDTO>,
+		res: Response,
+		next: NextFunction,
+	) {
+		console.log(_req.body);
 		next(new HTTPError(401, 'login err'));
 	}
 
-	register(_req: Request, res: Response, _next: NextFunction) {
-		this.ok(res, 'register');
+	async register(
+		{ body }: Request<Record<never, never>, Record<never, never>, UserRegisterDTO>,
+		res: Response,
+		next: NextFunction,
+	) {
+		const user = await this.userService.createUser(body);
+
+		if (!user) next(new HTTPError(422, 'This user already exists'));
+		this.ok(res, { user });
 	}
 }

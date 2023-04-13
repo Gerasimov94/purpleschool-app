@@ -1,3 +1,4 @@
+import { json } from 'body-parser';
 import express, { Express } from 'express';
 import { inject, injectable } from 'inversify';
 import 'reflect-metadata';
@@ -24,11 +25,16 @@ export default class App {
 		this.app.use('/user', this.userController.router);
 	}
 
+	useMiddleware() {
+		this.app.use(json());
+	}
+
 	useExceptionFilter() {
 		this.app.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
 	}
 
 	async init() {
+		this.useMiddleware();
 		this.useRoutes();
 		this.useExceptionFilter();
 		this.app.listen(this.port, () => {
