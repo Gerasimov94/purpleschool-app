@@ -5,6 +5,7 @@ import 'reflect-metadata';
 import { TYPES } from 'src/common/constants';
 import BaseController from 'src/common/controllers/base.controller';
 import { ILogger } from 'src/common/logger/logger.interface';
+import ValidateMiddleware from 'src/common/validation/validation.middleware';
 import HTTPError from 'src/errors/basic/http-error';
 import UserLoginDTO from 'src/user/dto/user-login.dto';
 import UserRegisterDTO from 'src/user/dto/user-register.dto';
@@ -21,7 +22,12 @@ export default class UserController extends BaseController implements IUserContr
 		super(loggerService);
 
 		this.bindRoutes([
-			{ method: 'post', path: '/register', cb: this.register },
+			{
+				method: 'post',
+				path: '/register',
+				cb: this.register,
+				middlewares: [new ValidateMiddleware(UserRegisterDTO)],
+			},
 			{ method: 'post', path: '/login', cb: this.login },
 		]);
 	}
@@ -31,7 +37,6 @@ export default class UserController extends BaseController implements IUserContr
 		res: Response,
 		next: NextFunction,
 	) {
-		console.log(_req.body);
 		next(new HTTPError(401, 'login err'));
 	}
 

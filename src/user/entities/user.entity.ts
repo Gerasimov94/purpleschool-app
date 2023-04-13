@@ -21,7 +21,9 @@ export default class User {
 		return this._password;
 	}
 
-	public async setPassword(pwd: string) {
-		this._password = await hash(pwd, 10);
+	public async setPassword(pwd: string, salt = 1337) {
+		this._password = await hash(pwd, salt);
+
+		return this._password;
 	}
 }

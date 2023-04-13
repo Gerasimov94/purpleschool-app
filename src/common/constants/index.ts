@@ -6,7 +6,9 @@ export const TYPES = {
 	ILogger: Symbol.for('ILogger'),
 	App: Symbol.for('App'),
 	IUserController: Symbol.for('IUserController'),
+	IConfigService: Symbol.for('IConfigService'),
 	ExceptionFilter: Symbol.for('ExceptionFilter'),
 	MonitoringSystem: Symbol.for('MonitoringSystem'),
 	IUserService: Symbol.for('IUserService'),
+	IPrismaService: Symbol.for('IPrismaService'),
 };

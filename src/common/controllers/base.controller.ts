@@ -1,7 +1,7 @@
 import { Response, Router } from 'express';
 import { injectable } from 'inversify';
 import 'reflect-metadata';
-import { IControllerRoute } from 'src/common/controllers/types';
+import { IControllerRoute } from 'src/common/types';
 import { ILogger } from 'src/common/logger/logger.interface';
 
 @injectable()
@@ -32,9 +32,13 @@ export default abstract class BaseController {
 
 	protected bindRoutes(routes: IControllerRoute[]) {
 		routes.forEach((route) => {
-			this.logger.log(route.path, route.method);
+			this.logger.log(`Route binded: ${route.method.toUpperCase()} ${route.path}`);
+
 			const bindedHandler = route.cb.bind(this);
-			this._router[route.method](route.path, bindedHandler);
+			const pipeline = route.middlewares
+				? route.middlewares?.map((ctx) => ctx.execute.bind(ctx)).concat(bindedHandler)
+				: bindedHandler;
+			this._router[route.method](route.path, pipeline);
 		});
 	}
 }
