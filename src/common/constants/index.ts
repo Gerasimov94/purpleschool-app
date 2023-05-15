@@ -11,4 +11,5 @@ export const TYPES = {
 	MonitoringSystem: Symbol.for('MonitoringSystem'),
 	IUserService: Symbol.for('IUserService'),
 	IPrismaService: Symbol.for('IPrismaService'),
+	IUsersRepository: Symbol.for('IUsersRepository'),
 };

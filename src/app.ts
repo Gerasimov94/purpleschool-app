@@ -4,10 +4,9 @@ import { inject, injectable } from 'inversify';
 import 'reflect-metadata';
 import { TYPES } from 'src/common/constants';
 import { ILogger } from 'src/common/logger/logger.interface';
-import { IConfigService } from 'src/config/config.service.interface';
 import { IPrismaService } from 'src/db/prisma.service.interface';
 import { IExceptionFilter } from 'src/errors/types';
-import { IUserController } from 'src/user/interfaces/user.interface';
+import { IUserController } from 'src/user/entities/user.interface';
 
 @injectable()
 export default class App {
@@ -18,7 +17,6 @@ export default class App {
 		@inject(TYPES.ILogger) private logger: ILogger,
 		@inject(TYPES.IUserController) private userController: IUserController,
 		@inject(TYPES.ExceptionFilter) private exceptionFilter: IExceptionFilter,
-		@inject(TYPES.IConfigService) private configService: IConfigService,
 		@inject(TYPES.IPrismaService) private prismaService: IPrismaService,
 	) {
 		this.app = express();

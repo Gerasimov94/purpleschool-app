@@ -7,14 +7,13 @@ import { ILogger } from 'src/common/logger/logger.interface';
 
 @injectable()
 export default class PrismaService implements IPrismaService {
-	private _prismaClient: PrismaClient;
-
+	prismaClient: PrismaClient;
 	constructor(@inject(TYPES.ILogger) private logger: ILogger) {
-		this._prismaClient = new PrismaClient();
+		this.prismaClient = new PrismaClient();
 	}
 	async connect() {
 		try {
-			await this._prismaClient.$connect();
+			await this.prismaClient.$connect();
 			this.logger.log('[PrismaService]: Successfully connected to DB');
 		} catch (err) {
 			if (err instanceof Error) {
@@ -24,6 +23,6 @@ export default class PrismaService implements IPrismaService {
 	}
 
 	async disconnect() {
-		await this._prismaClient.$disconnect();
+		await this.prismaClient.$disconnect();
 	}
 }

@@ -1,8 +1,8 @@
+import { UserModel } from '@prisma/client';
 import UserLoginDTO from 'src/user/dto/user-login.dto';
 import UserRegisterDTO from 'src/user/dto/user-register.dto';
-import User from 'src/user/entities/user.entity';
 
 export interface IUserService {
-	createUser(user: UserRegisterDTO): Promise<User | null>;
+	createUser(user: UserRegisterDTO): Promise<UserModel | null | undefined>;
 	validateUser(data: UserLoginDTO): Promise<boolean>;
 }

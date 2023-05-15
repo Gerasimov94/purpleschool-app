@@ -11,7 +11,6 @@ export default class ValidateMiddleware implements IMiddleware {
 
 		try {
 			const errors = await validate(instance);
-			console.log(errors);
 
 			if (errors.length) {
 				res.status(422).send({ errors });
