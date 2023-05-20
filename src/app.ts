@@ -4,6 +4,8 @@ import { inject, injectable } from 'inversify';
 import 'reflect-metadata';
 import { TYPES } from 'src/common/constants';
 import { ILogger } from 'src/common/logger/logger.interface';
+import AuthMiddleware from 'src/common/middlewares/auth.middleware';
+import { IConfigService } from 'src/config/config.service.interface';
 import { IPrismaService } from 'src/db/prisma.service.interface';
 import { IExceptionFilter } from 'src/errors/types';
 import { IUserController } from 'src/user/entities/user.interface';
@@ -18,6 +20,7 @@ export default class App {
 		@inject(TYPES.IUserController) private userController: IUserController,
 		@inject(TYPES.ExceptionFilter) private exceptionFilter: IExceptionFilter,
 		@inject(TYPES.IPrismaService) private prismaService: IPrismaService,
+		@inject(TYPES.IConfigService) private configService: IConfigService,
 	) {
 		this.app = express();
 		this.port = 8080;
@@ -28,7 +31,9 @@ export default class App {
 	}
 
 	useMiddleware() {
+		const authMiddleware = new AuthMiddleware(this.configService.get('JWT_SECRET'));
 		this.app.use(json());
+		this.app.use(authMiddleware.execute.bind(authMiddleware));
 	}
 
 	useExceptionFilter() {

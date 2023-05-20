@@ -44,4 +44,14 @@ export default class UserService implements IUserService {
 
 		return false;
 	}
+
+	async getUserByEmail(email: UserModel['email']) {
+		const user = await this._usersRepository.find(email);
+
+		if (user) {
+			return user;
+		}
+
+		return null;
+	}
 }
